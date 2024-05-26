@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { redirect } from '@sveltejs/kit';
 
 	export let step: number = 0;
@@ -20,7 +21,7 @@
 				type="button"
 				on:click={() => {
 					if (step == 0) {
-						redirect(302, '/');
+						goto('/');
 					} else {
 						step = step - 1;
 					}
@@ -37,36 +38,40 @@
 				<p class="title">{titles[step]}</p>
 			{/if}
 
-			{#if step == 1}
-				<input type="text" id="name" name="name" placeholder="이름을 입력해주세요." />
-			{:else if step == 2}
-				<input
-					type="text"
-					id="schoolName"
-					name="schoolName"
-					placeholder="학교 이름을 입력해주세요."
-				/>
-				<input type="number" id="studentsId" name="studentsId" placeholder="학번을 입력해주세요." />
-			{:else if step == 3}
-				<input type="text" id="username" name="username" />
-			{:else if step == 4}
-				<input type="password" id="password" name="password" />
-			{/if}
+			<input
+				type="text"
+				id="name"
+				name="name"
+				placeholder="이름을 입력해주세요."
+				class={step == 1 ? '' : 'hidden'}
+			/>
+			<input
+				type="text"
+				id="schoolName"
+				name="schoolName"
+				placeholder="학교 이름을 입력해주세요."
+				class={step == 2 ? '' : 'hidden'}
+			/>
+			<input
+				type="number"
+				id="studentsId"
+				name="studentsId"
+				placeholder="학번을 입력해주세요."
+				class={step == 2 ? '' : 'hidden'}
+			/>
+			<input type="text" id="username" name="username" class={step == 3 ? '' : 'hidden'} />
+			<input type="password" id="password" name="password" class={step == 4 ? '' : 'hidden'} />
 		</div>
 
 		<div class="footer">
-			{#if step == 5}
+			{#if step == 4}
 				<button type="submit" class="next">가입하기</button>
 			{:else}
 				<button
 					class="next"
 					type="button"
 					on:click={() => {
-						if (step == 4) {
-							step = 0;
-						} else {
-							step = step + 1;
-						}
+						step = step + 1;
 					}}>다음</button
 				>
 			{/if}
@@ -75,6 +80,9 @@
 </div>
 
 <style>
+	.hidden {
+		display: none;
+	}
 	.container {
 		display: flex;
 		flex-direction: column;
@@ -82,7 +90,7 @@
 	}
 
 	input {
-		color:black;
+		color: black;
 		border: none;
 		border-bottom: 0.1rem solid gray;
 		margin-top: 2rem;
@@ -97,7 +105,8 @@
 		outline: none;
 	}
 
-	.contents, .footer {
+	.contents,
+	.footer {
 		text-align: center;
 		align-items: center;
 		justify-content: center;
@@ -117,7 +126,7 @@
 		background-color: white;
 		border: none;
 	}
-	
+
 	.contents {
 		flex: 8.5;
 		height: 85vh;

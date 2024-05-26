@@ -34,6 +34,6 @@ export const actions: Actions = {
 			console.error(err);
 			return fail(400, { message: 'Could not register user' });
 		}
-		throw redirect(302, '/login');
+		throw redirect(302, '/auth/login');
 	}
 };
