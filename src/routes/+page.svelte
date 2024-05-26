@@ -73,14 +73,7 @@
 			</div>
 		{/if}
 	</div>
-	<section class="contents">
-		<div class="card-news">
-			<img src="" alt="틀딱" />
-			<p class="news-title">에코잉 첫 시범</p>
-			<p class="news-contents">테스트 콘텐츠입니다.</p>
-			<button>확인하기</button>
-		</div>
-	</section>
+	<a href="/guide">가이드</a>
 </main>
 
 <style>
