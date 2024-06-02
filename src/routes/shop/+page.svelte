@@ -3,18 +3,7 @@
 	import { writable } from 'svelte/store';
 	import Loding from '../Loding.svelte';
 	import { goto } from '$app/navigation';
-
-	type Product = {
-		id: number;
-		name: string;
-		imgURL: string;
-		description: string;
-		published: boolean;
-		amount: number;
-		price: number;
-		createdAt: string;
-		updatedAt: String;
-	};
+	import type { Product } from '$lib/type/type';
 
 	let isLoading = writable(false);
 	const products = writable<Product[]>([]);
@@ -24,13 +13,18 @@
 		try {
 			const response = await fetch('/api/product');
 			const data = await response.json();
-			products.set(data.products);
+			products.set(data.contents.products);
 		} catch (error) {
-			console.error('Error fetching cards:', error);
+			console.error('제품을 불러오는 도중 오류가 발생했습니다:', error);
 		}
 		isLoading.set(false);
 	});
 </script>
+
+<svelte:head>
+	<title>에코잉 | SHOP</title>
+	<meta name="description" content="환경을 위한 움직임 ― 에코잉" />
+</svelte:head>
 
 {#if $isLoading}
 	<Loding />

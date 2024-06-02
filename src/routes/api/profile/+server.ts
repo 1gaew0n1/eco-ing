@@ -1,40 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { auth } from '$lib/lucia';
 import { prisma } from '$lib/prisma';
-import { fail, redirect } from '@sveltejs/kit';
+import genResponse from '$lib/type/response';
 
-export async function POST({ request, locals }: { request: any; locals: any }): Promise<Response> {
+export async function POST({ request }: { request: any }): Promise<Response> {
 	try {
 		const { id }: { id: string } = await request.json();
-
-		const profile = await prisma.profile.findMany({
+		const profile = await prisma.profile.findUnique({
 			where: {
 				user_id: id
 			}
 		});
+		console.log(profile?.id);
 
 		if (!profile) {
-			return new Response(JSON.stringify({ error: 'Profile not found' }), {
-				status: 404,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
+			return genResponse(404, { error: '프로필을 찾지 못하였습니다.' });
 		}
 
-		return new Response(JSON.stringify({ profile }), {
-			status: 302,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		return genResponse(302, { message: '프로필을 찾았습니다.', profile });
 	} catch (err) {
 		console.error(err);
-		return new Response(JSON.stringify({ error: 'Couldnt change user information' }), {
-			status: 404,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		return genResponse(404, { message: '프로필을 가져오는 과정에서, 오류가 발생했습니다.', err });
 	}
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { profileStore } from '$lib/profileStore';
+	import { profileStore } from '$lib/type/type';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { writable } from 'svelte/store';
@@ -34,23 +34,23 @@
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						user_id: userId
+						id: userId
 					})
 				});
 
-				if (response.ok) {
-					throw new Error('Failed to fetch profile');
+				if (response.error) {
+					throw new Error('프로필 정보를 가져오는 중 오류가 발생했습니다.');
 				}
 
 				const data = await response.json();
 
-				if (data.profile && data.profile.length > 0) {
-					profileStore.set(data.profile[0]);
+				if (data.contents.profile) {
+					profileStore.set(data.contents.profile);
 				} else {
-					throw new Error('Profile not found');
+					throw new Error('프로필을 찾지 못하였습니다.');
 				}
 			} catch (error) {
-				console.error('Error fetching profile:', error);
+				console.error('프로필 정보를 가져오는 중 오류가 발생했습니다:', error);
 				profileStore.set({
 					id: '',
 					user_id: '',
@@ -141,6 +141,11 @@
 		<button type="submit" class="next">변경</button>
 	</div>
 </form>
+
+<svelte:head>
+	<title>에코잉 | 계정관리</title>
+	<meta name="description" content="환경을 위한 움직임 ― 에코잉" />
+</svelte:head>
 
 <style>
 	.container {

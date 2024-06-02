@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { profileStore } from '$lib/profileStore';
+	import { profileStore, type Card } from '$lib/type/type';
 	import { writable } from 'svelte/store';
 	import type { PageData } from './$types';
 	export let data: PageData;
@@ -8,17 +8,6 @@
 	import Loding from './Loding.svelte';
 
 	let isLoading = writable(false);
-
-	type Card = {
-		id: string;
-		title: string;
-		imgURL: string;
-		style: string;
-		url: string;
-		createdAt: string;
-		updatedAt: string;
-		description: String;
-	};
 
 	const cards = writable<Card[]>([]);
 
@@ -39,23 +28,19 @@
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						user_id: userId
+						id: userId
 					})
 				});
 
-				if (response.ok) {
-					throw new Error('Failed to fetch profile');
-				}
-
 				const data = await response.json();
 
-				if (data.profile && data.profile.length > 0) {
-					profileStore.set(data.profile[0]);
+				if (data.contents.profile) {
+					profileStore.set(data.contents.profile);
 				} else {
-					throw new Error('Profile not found');
+					throw new Error('프로필을 찾지 못했습니다.');
 				}
 			} catch (error) {
-				console.error('Error fetching profile:', error);
+				console.error('프로필을 가져오는 도중 오류가 발생했습니다.:', error);
 				profileStore.set({
 					id: '',
 					user_id: '',
@@ -82,9 +67,9 @@
 		try {
 			const response = await fetch('/api/card');
 			const data = await response.json();
-			cards.set(data.cards);
+			cards.set(data.contents.cards);
 		} catch (error) {
-			console.error('Error fetching cards:', error);
+			console.error('카드를 가져오는 도중 오류가 발생했습니다:', error);
 		}
 		isLoading.set(false);
 	});
@@ -179,7 +164,7 @@
 							<h2 class="card-title">{card.title}</h2>
 							<hr />
 							<p>{card.description}</p>
-							<p><a href={card.url} target="_blank" class="card-link">바로가기</a></p>
+							<p><a href={card.url} class="card-link">바로가기</a></p>
 						</div>
 					</div>
 				{/if}

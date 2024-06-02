@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { prisma } from '$lib/prisma';
 import { COOLSMS_API_KEY, COOLSMS_API_SECRET, PHONE_NUMBER } from '$env/static/private';
 import msgModule from 'coolsms-node-sdk';
+import genResponse from '$lib/type/response';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	try {
@@ -37,10 +38,10 @@ export const actions: Actions = {
 				}
 			});
 			if (!user) {
-				throw Error("Could'nt find USER");
+				throw Error('사용자를 찾지 못하였습니다');
 			}
 			if (!product) {
-				throw Error("Could'nt find PRODUCT");
+				throw Error('제품을 찾지 못하였습니다');
 			}
 			await prisma.profile.update({
 				where: {
@@ -56,12 +57,7 @@ export const actions: Actions = {
 				}
 			});
 			if (!product_d) {
-				return new Response(JSON.stringify({ error: 'Error' }), {
-					status: 404,
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
+				return genResponse(404, { error: '제품을 찾지 못하였습니다.' });
 			}
 			await prisma.product.update({
 				where: {
@@ -87,7 +83,7 @@ export const actions: Actions = {
 			});
 		} catch (err) {
 			console.error(err);
-			return fail(400, { message: 'Could not login user.' });
+			return fail(400, { message: '구매 도중 오류가 발생했습니다.' });
 		}
 		throw redirect(302, '/');
 	}

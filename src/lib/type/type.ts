@@ -12,6 +12,29 @@ interface Profile {
 	email: string | null;
 }
 
+export type Product = {
+	id: number;
+	name: string;
+	imgURL: string;
+	description: string;
+	published: boolean;
+	amount: number;
+	price: number;
+	createdAt: string;
+	updatedAt: String;
+};
+
+export type Card = {
+	id: string;
+	title: string;
+	imgURL: string;
+	style: string;
+	url: string;
+	createdAt: string;
+	updatedAt: string;
+	description: String;
+};
+
 // 초기 프로파일 객체
 const initialProfile: Profile = {
 	id: '',

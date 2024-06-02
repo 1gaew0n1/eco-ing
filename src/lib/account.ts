@@ -48,6 +48,5 @@ export async function getProfile(userId: any) {
 		}
 	});
 
-	console.log(userId);
 	return profile;
 }

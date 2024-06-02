@@ -23,7 +23,7 @@ export const actions: Actions = {
 			await register(name, username, password, studentsId, schoolName, barcode);
 		} catch (err) {
 			console.error(err);
-			return fail(400, { message: 'Could not register user' });
+			return fail(400, { message: '회원가입에 실패하였습니다.' });
 		}
 		throw redirect(302, '/auth/login');
 	}

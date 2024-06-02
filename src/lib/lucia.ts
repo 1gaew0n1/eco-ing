@@ -8,8 +8,7 @@ export const auth = lucia({
 	adapter: prisma(client, {
 		user: 'user',
 		key: 'key',
-		session: 'session',
-		profile: 'profile'
+		session: 'session'
 	}),
 	env: dev ? 'DEV' : 'PROD',
 	middleware: sveltekit(),

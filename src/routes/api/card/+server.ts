@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { auth } from '$lib/lucia';
 import { prisma } from '$lib/prisma';
-import { fail, redirect } from '@sveltejs/kit';
+import genResponse from '$lib/type/response';
 import { v4 } from 'uuid';
+import { SECRET_KEY } from '$env/static/private';
 
-export async function POST({ request, locals }: { request: any; locals: any }): Promise<Response> {
+export async function POST({ request }: { request: any }): Promise<Response> {
 	try {
 		const {
 			title,
@@ -22,27 +22,19 @@ export async function POST({ request, locals }: { request: any; locals: any }): 
 			description: string;
 		} = await request.json();
 
-		if (secret !== 'waterwater') {
-			return new Response(JSON.stringify({ error: 'Couldnt make' }), {
-				status: 404,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
+		if (secret !== SECRET_KEY) {
+			return genResponse(403, { error: 'Secret 코드가 다릅니다.' });
 		}
 
-		if (title.length > 11) {
-			return new Response(JSON.stringify({ error: 'Title is too long' }), {
-				status: 404,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
+		if (title.length > 20) {
+			return genResponse(404, { error: '제목이 너무 깁니다. (제목은 19글자 이하여야됨)' });
 		}
+
+		const cardId = v4();
 
 		await prisma.card.create({
 			data: {
-				id: v4(),
+				id: cardId,
 				title,
 				imgURL,
 				style,
@@ -50,52 +42,29 @@ export async function POST({ request, locals }: { request: any; locals: any }): 
 				description
 			}
 		});
-	} catch (err) {
-		console.error(err);
-		return new Response(JSON.stringify({ error: 'Couldnt change user information' }), {
-			status: 404,
-			headers: {
-				'Content-Type': 'application/json'
+		const card = await prisma.card.findUnique({
+			where: {
+				id: cardId
 			}
 		});
+		return genResponse(302, { message: '카드를 생성했습니다.', card });
+	} catch (err) {
+		console.error(err);
+		return genResponse(404, { error: '카드를 생성하는 도중 에러가 발생했습니다.', err });
 	}
-	return new Response(JSON.stringify({ message: 'Success', ok: true }), {
-		status: 302,
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
 }
 
-let cards: any;
-
-export async function GET({ request, locals }: { request: any; locals: any }): Promise<Response> {
+export async function GET(): Promise<Response> {
 	try {
-		cards = await prisma.card.findMany();
+		const cards = await prisma.card.findMany();
+		return genResponse(302, { cards });
 	} catch (err) {
 		console.error(err);
-		return new Response(JSON.stringify({ error: 'Couldnt change user information' }), {
-			status: 404,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		return genResponse(404, { error: '카드를 불러오는 도중 에러가 발생했습니다.', err });
 	}
-	return new Response(JSON.stringify({ cards }), {
-		status: 302,
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
 }
 
-export async function DELETE({
-	request,
-	locals
-}: {
-	request: any;
-	locals: any;
-}): Promise<Response> {
+export async function DELETE({ request }: { request: any }): Promise<Response> {
 	try {
 		const { id }: { id: string } = await request.json();
 		await prisma.card.delete({
@@ -103,19 +72,9 @@ export async function DELETE({
 				id: id
 			}
 		});
+		return genResponse(302, { message: '카드를 지우는데 성공했습니다.' });
 	} catch (err) {
 		console.error(err);
-		return new Response(JSON.stringify({ error: 'Couldnt change user information' }), {
-			status: 404,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		return genResponse(404, { error: '카드를 불러오는 도중 에러가 발생했습니다.', err });
 	}
-	return new Response(JSON.stringify({ message: 'success' }), {
-		status: 302,
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
 }

@@ -94,6 +94,11 @@
 	</form>
 </div>
 
+<svelte:head>
+	<title>에코잉 | 회원가입</title>
+	<meta name="description" content="환경을 위한 움직임 ― 에코잉" />
+</svelte:head>
+
 <style>
 	.hidden {
 		display: none;

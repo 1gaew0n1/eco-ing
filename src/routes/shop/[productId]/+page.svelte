@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
-	import { profileStore } from '$lib/profileStore';
+	import { profileStore, type Product } from '$lib/type/type';
 	export let data: PageData;
 
 	let userId = data.user.userId;
@@ -23,19 +23,15 @@
 				})
 			});
 
-			if (response.ok) {
-				throw new Error('Failed to fetch profile');
-			}
-
 			const data = await response.json();
 
-			if (data.profile && data.profile.length > 0) {
-				profileStore.set(data.profile[0]);
+			if (data.contents.profile && data.contents.profile.length > 0) {
+				profileStore.set(data.contents.profile[0]);
 			} else {
-				throw new Error('Profile not found');
+				throw new Error('프로필을 불러오지 못했습니다.');
 			}
 		} catch (error) {
-			console.error('Error fetching profile:', error);
+			console.error('프로필을 불러오는 도중 오류가 발생했습니다.:', error);
 			profileStore.set({
 				id: '',
 				user_id: '',
@@ -58,18 +54,6 @@
 
 	const pid = $page.params.productId;
 
-	type Product = {
-		id: number;
-		name: string;
-		imgURL: string;
-		description: string;
-		published: boolean;
-		amount: number;
-		price: number;
-		createdAt: string;
-		updatedAt: String;
-	};
-
 	let isLoading = writable(false);
 	let product: Product;
 
@@ -91,13 +75,18 @@
 			});
 			const data = await response.json();
 
-			product = data.product;
+			product = data.contents.product;
 		} catch (error) {
-			console.error('Error fetching cards:', error);
+			console.error('제품을 불러오는데 오류가 발생했습니다:', error);
 		}
 		isLoading.set(false);
 	});
 </script>
+
+<svelte:head>
+	<title>에코잉 | SHOP</title>
+	<meta name="description" content="환경을 위한 움직임 ― 에코잉" />
+</svelte:head>
 
 {#if $isLoading}
 	<Loding />

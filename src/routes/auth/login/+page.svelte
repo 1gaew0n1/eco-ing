@@ -46,7 +46,7 @@
 	<div class="contents">
 		<p class="title">로그인</p>
 		{#if error}
-			<p class="error">Error: {error}</p>
+			<p class="error">오류: {error}</p>
 		{/if}
 		<input type="text" id="username" name="username" placeholder="아이디" required />
 		<input type="password" id="password" name="password" placeholder="비밀번호" required />
@@ -55,6 +55,11 @@
 		<button type="submit" class="next">로그인</button>
 	</div>
 </form>
+
+<svelte:head>
+	<title>에코잉 | 로그인</title>
+	<meta name="description" content="환경을 위한 움직임 ― 에코잉" />
+</svelte:head>
 
 <style>
 	.container {

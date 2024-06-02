@@ -29,7 +29,7 @@ export const actions: Actions = {
 			locals.auth.setSession(session);
 		} catch (err) {
 			console.error(err);
-			return fail(400, { message: 'Could not login user.' });
+			return fail(400, { message: '로그인하지 못하였습니다.' });
 		}
 		throw redirect(302, '/');
 	}
