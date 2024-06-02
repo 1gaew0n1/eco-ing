@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { redirect } from '@sveltejs/kit';
+	import { writable } from 'svelte/store';
+	import Loding from '../../Loding.svelte';
 
 	export let step: number = 0;
 	const titles = [
@@ -9,12 +11,24 @@
 		'학교와 학번을 입력해주세요.',
 		'아이디를 설정해주세요.',
 		'비밀번호를 설정해주세요.',
-		'테스트'
+		'학생증 뒷면 바코드의 글자를 입력해주세요.',
+		''
 	];
+
+	const isLoading = writable(false);
+
+	// 폼 제출 이벤트 핸들러
+	const handleSubmit = (event: Event) => {
+		isLoading.set(true);
+	};
 </script>
 
+{#if $isLoading}
+	<Loding />
+{/if}
+
 <div class="container">
-	<form method="POST">
+	<form method="POST" on:submit={handleSubmit}>
 		<div class="header">
 			<button
 				class="back"
@@ -61,10 +75,11 @@
 			/>
 			<input type="text" id="username" name="username" class={step == 3 ? '' : 'hidden'} />
 			<input type="password" id="password" name="password" class={step == 4 ? '' : 'hidden'} />
+			<input type="text" id="barcode" name="barcode" class={step == 5 ? '' : 'hidden'} />
 		</div>
 
 		<div class="footer">
-			{#if step == 4}
+			{#if step == 5}
 				<button type="submit" class="next">가입하기</button>
 			{:else}
 				<button

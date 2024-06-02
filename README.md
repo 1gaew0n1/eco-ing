@@ -31,7 +31,13 @@
 git clone https://github.com/1gaew0n1/eco-ing.git
 ```
 
-### 2. 디벨롭 서버 열기
+### 2. ENV 파일 제작
+
+```env
+DATABASE_URL={데이터베이스 URL 넣기}
+```
+
+### 3. 디벨롭 서버 열기
 
 ```bash
 bun install

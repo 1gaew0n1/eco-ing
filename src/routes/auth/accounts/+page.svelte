@@ -1,8 +1,87 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { profileStore } from '$lib/profileStore';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
+	import { writable } from 'svelte/store';
+	import Loding from '../../Loding.svelte';
 	export let data: PageData;
+
+	const isLoading = writable(false);
+
+	const handleSubmit = (event: Event) => {
+		isLoading.set(true);
+	};
+
+	// 폼에 이벤트 핸들러를 등록
+	onMount(() => {
+		const form = document.querySelector('.container');
+		if (form) {
+			form.addEventListener('submit', handleSubmit);
+		}
+	});
+
+	if (data.user) {
+		isLoading.set(true);
+		let userId = data.user.userId;
+
+		// API 요청을 보내고 응답에서 point 값을 추출하는 함수
+		async function fetchProfile() {
+			try {
+				const response: any = await fetch('/api/profile', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						user_id: userId
+					})
+				});
+
+				if (response.ok) {
+					throw new Error('Failed to fetch profile');
+				}
+
+				const data = await response.json();
+
+				if (data.profile && data.profile.length > 0) {
+					profileStore.set(data.profile[0]);
+				} else {
+					throw new Error('Profile not found');
+				}
+			} catch (error) {
+				console.error('Error fetching profile:', error);
+				profileStore.set({
+					id: '',
+					user_id: '',
+					studentsId: '',
+					schoolName: '',
+					point: 0,
+					level: 0,
+					barcode: '',
+					email: null
+				});
+			}
+			isLoading.set(false);
+		}
+
+		// 페이지가 로드될 때 fetchProfile 함수 호출
+		onMount(() => {
+			fetchProfile();
+		});
+	}
+
+	let error: string | null = null;
+	export let form;
+	$: if (form) {
+		error = form.message;
+		isLoading.set(false);
+	}
 </script>
+
+{#if $isLoading}
+	<Loding />
+{/if}
 
 <form method="POST" class="container">
 	<div class="header">
@@ -17,15 +96,45 @@
 
 	<div class="contents">
 		<p class="title">계정 정보 수정</p>
+		{#if error}
+			<p class="error">Error: {error}</p>
+		{/if}
+
 		<input type="text" id="name" name="name" value={data.user.name} required />
 
 		<input type="text" id="username" name="username" value={data.user.username} required />
 
-		<input type="text" id="studentsId" name="studentsId" value={data.user.studentsId} required />
+		<input
+			type="text"
+			id="studentsId"
+			name="studentsId"
+			value={$profileStore.studentsId}
+			required
+		/>
 
-		<input type="text" id="schoolName" name="schoolName" value={data.user.schoolName} required />
+		<input
+			type="text"
+			id="schoolName"
+			name="schoolName"
+			placeholder={$profileStore.schoolName}
+			disabled={true}
+		/>
 
-		<input type="email" id="email" name="email" value={data.user.email} />
+		<input
+			type="email"
+			id="email"
+			name="email"
+			value={$profileStore.email}
+			placeholder="이메일을 입력하세요"
+		/>
+
+		<input
+			type="text"
+			id="schoolName"
+			name="schoolName"
+			placeholder={$profileStore.barcode}
+			disabled={true}
+		/>
 	</div>
 
 	<div class="footer">
@@ -34,9 +143,6 @@
 </form>
 
 <style>
-	.hidden {
-		display: none;
-	}
 	.container {
 		display: flex;
 		flex-direction: column;
@@ -89,17 +195,6 @@
 		font-size: 2rem;
 		padding-top: 1em;
 		font-weight: 1000;
-	}
-
-	.emoji {
-		font-size: 9rem;
-		padding-top: 1.25em;
-		font-weight: 1000;
-	}
-
-	.first {
-		font-size: 3rem;
-		padding-top: 2rem;
 	}
 
 	.footer {

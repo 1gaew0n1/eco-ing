@@ -1,8 +1,39 @@
-<script>
+<script lang="ts">
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import Loding from '../../Loding.svelte';
+
+	const isLoading = writable(false);
+
+	// 폼 제출 이벤트 핸들러
+	const handleSubmit = (event: Event) => {
+		isLoading.set(true);
+	};
+
+	// 폼에 이벤트 핸들러를 등록
+	onMount(() => {
+		const form = document.querySelector('.container');
+		if (form) {
+			form.addEventListener('submit', handleSubmit);
+		}
+	});
+
+	let error: string | null = null;
+
+	export let form;
+	$: if (form) {
+		error = form.message;
+		isLoading.set(false);
+	}
 </script>
 
-<form method="POST" class="container">
+{#if $isLoading}
+	<Loding />
+{/if}
+
+<form method="POST" class="container" use:enhance>
 	<div class="header">
 		<button
 			class="back"
@@ -14,6 +45,9 @@
 	</div>
 	<div class="contents">
 		<p class="title">로그인</p>
+		{#if error}
+			<p class="error">Error: {error}</p>
+		{/if}
 		<input type="text" id="username" name="username" placeholder="아이디" required />
 		<input type="password" id="password" name="password" placeholder="비밀번호" required />
 	</div>

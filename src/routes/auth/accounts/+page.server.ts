@@ -1,10 +1,11 @@
 import { auth } from '$lib/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
+import { prisma } from '$lib/prisma';
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
-		const { username, name, email, studentsId, schoolName } = Object.fromEntries(
+		const { username, name, email, studentsId } = Object.fromEntries(
 			await request.formData()
 		) as Record<string, string>;
 		try {
@@ -14,14 +15,25 @@ export const actions: Actions = {
 				console.log(session);
 				throw redirect(302, '/');
 			}
-			await auth.updateUserAttributes(session.user.userId, {
-				name,
-				username,
-				studentsId,
-				schoolName,
-				email,
-				point: session.user.point,
-				level: session.user.level
+
+			await prisma.profile.update({
+				where: {
+					user_id: session.user.userId
+				},
+				data: {
+					studentsId: studentsId,
+					email: email
+				}
+			});
+
+			await prisma.user.update({
+				where: {
+					id: session.user.userId
+				},
+				data: {
+					name: name,
+					username: username
+				}
 			});
 		} catch (err) {
 			console.error(err);

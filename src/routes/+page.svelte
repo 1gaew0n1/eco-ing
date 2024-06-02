@@ -1,13 +1,103 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { profileStore } from '$lib/profileStore';
+	import { writable } from 'svelte/store';
 	import type { PageData } from './$types';
 	export let data: PageData;
+	import { onMount } from 'svelte';
+	import Loding from './Loding.svelte';
+
+	let isLoading = writable(false);
+
+	type Card = {
+		id: string;
+		title: string;
+		imgURL: string;
+		style: string;
+		url: string;
+		createdAt: string;
+		updatedAt: string;
+		description: String;
+	};
+
+	const cards = writable<Card[]>([]);
+
+	// 폼 제출 이벤트 핸들러
+	const handleSubmit = (event: Event) => {
+		isLoading.set(true);
+	};
+
+	if (data.user) {
+		let userId = data.user.userId;
+
+		// API 요청을 보내고 응답에서 point 값을 추출하는 함수
+		async function fetchProfile() {
+			try {
+				const response: any = await fetch('/api/profile', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						user_id: userId
+					})
+				});
+
+				if (response.ok) {
+					throw new Error('Failed to fetch profile');
+				}
+
+				const data = await response.json();
+
+				if (data.profile && data.profile.length > 0) {
+					profileStore.set(data.profile[0]);
+				} else {
+					throw new Error('Profile not found');
+				}
+			} catch (error) {
+				console.error('Error fetching profile:', error);
+				profileStore.set({
+					id: '',
+					user_id: '',
+					studentsId: '',
+					schoolName: '',
+					point: 0,
+					level: 0,
+					barcode: '',
+					email: null
+				});
+			}
+		}
+
+		// 페이지가 로드될 때 fetchProfile 함수 호출
+		onMount(async () => {
+			isLoading.set(true);
+			await fetchProfile();
+			isLoading.set(false);
+		});
+	}
+
+	onMount(async () => {
+		isLoading.set(true);
+		try {
+			const response = await fetch('/api/card');
+			const data = await response.json();
+			cards.set(data.cards);
+		} catch (error) {
+			console.error('Error fetching cards:', error);
+		}
+		isLoading.set(false);
+	});
 </script>
 
 <svelte:head>
 	<title>에코잉 | HOME</title>
 	<meta name="description" content="환경을 위한 움직임 ― 에코잉" />
 </svelte:head>
+
+{#if $isLoading}
+	<Loding />
+{/if}
 
 <main>
 	<div class="container">
@@ -28,7 +118,7 @@
 				<p class="description">환경을 지키는 움직임 - 에코잉</p>
 				<div class="point">
 					<p class="small-title">{data.user.name}님의 환경 포인트</p>
-					<p class="big-number">{data.user.point}P</p>
+					<p class="big-number">{$profileStore.point}P</p>
 				</div>
 			</div>
 			<div class="toolkit">
@@ -54,7 +144,7 @@
 
 				<div class="menu-button">
 					<form method="POST">
-						<button formaction="/logout" type="submit"
+						<button formaction="/logout" type="submit" on:submit={handleSubmit}
 							><p>Log out</p>
 							로그아웃</button
 						>
@@ -73,10 +163,88 @@
 			</div>
 		{/if}
 	</div>
-	<a href="/guide">가이드</a>
+	<div class="contents">
+		<div>
+			{#each $cards as card}
+				{#if card.style == 'only_image'}
+					<div class="card">
+						<a href={card.url} class="card-link2"
+							><img src={card.imgURL} alt={card.title} class="card-image2" /></a
+						>
+					</div>
+				{:else}
+					<div class="card">
+						<img src={card.imgURL} alt={card.title} class="card-image" />
+						<div class="card-content">
+							<h2 class="card-title">{card.title}</h2>
+							<hr />
+							<p>{card.description}</p>
+							<p><a href={card.url} target="_blank" class="card-link">바로가기</a></p>
+						</div>
+					</div>
+				{/if}
+			{/each}
+		</div>
+	</div>
 </main>
 
 <style>
+	hr {
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+	.card {
+		width: calc(100% - 2rem);
+		margin: 1rem;
+		border: 2px solid #ccc;
+		border-radius: 8px;
+		overflow: hidden;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.card-image {
+		width: 30%;
+		height: auto;
+		object-fit: cover;
+	}
+
+	.card-link2 {
+		display: flex;
+		flex-grow: 1;
+	}
+
+	.card-image2 {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.card-content {
+		padding: 1rem;
+		width: 70%;
+	}
+
+	.card-title {
+		margin-top: 0;
+		font-size: 2rem;
+	}
+
+	.card-link {
+		display: inline-block;
+		margin-top: 1rem;
+		padding: 0.5rem 1rem;
+		border: 2px solid #ccc;
+		border-radius: 4px;
+		text-decoration: none;
+		color: inherit;
+		transition: background-color 0.3s, color 0.3s;
+	}
+
+	.card-link:hover {
+		background-color: #ccc;
+		color: #fff;
+	}
 	.container {
 		display: flex;
 		text-align: center;

@@ -21,19 +21,41 @@ model Key {
 
 model User {
   id         String    @id @unique
-  email      String?
   username   String
-  name       String
-  studentsId String
-  schoolName String
-  point      Int
-  level      Int
+  name String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   keys       Key[]
   sessions   Session[]
+  profile    Profile[]
 
   @@map("user")
+}
+
+model Profile {
+  id String @id @unique
+  user_id String @unique
+  studentsId String 
+  schoolName String
+  point Int
+  level Int
+  barcode String @unique
+  email String?
+  user User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@map("profile")
+}
+
+model Card {
+  id String @id @unique
+  title String
+  imgURL String
+  style String
+  url String
+  description String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Session {
