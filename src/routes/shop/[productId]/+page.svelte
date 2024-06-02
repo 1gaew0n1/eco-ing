@@ -4,6 +4,57 @@
 	import Loding from '../../Loding.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import type { PageData } from './$types';
+	import { profileStore } from '$lib/profileStore';
+	export let data: PageData;
+
+	let userId = data.user.userId;
+
+	// API 요청을 보내고 응답에서 point 값을 추출하는 함수
+	async function fetchProfile() {
+		try {
+			const response: any = await fetch('/api/profile', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					user_id: userId
+				})
+			});
+
+			if (response.ok) {
+				throw new Error('Failed to fetch profile');
+			}
+
+			const data = await response.json();
+
+			if (data.profile && data.profile.length > 0) {
+				profileStore.set(data.profile[0]);
+			} else {
+				throw new Error('Profile not found');
+			}
+		} catch (error) {
+			console.error('Error fetching profile:', error);
+			profileStore.set({
+				id: '',
+				user_id: '',
+				studentsId: '',
+				schoolName: '',
+				point: 0,
+				level: 0,
+				barcode: '',
+				email: null
+			});
+		}
+	}
+
+	// 페이지가 로드될 때 fetchProfile 함수 호출
+	onMount(async () => {
+		isLoading.set(true);
+		await fetchProfile();
+		isLoading.set(false);
+	});
 
 	const pid = $page.params.productId;
 
@@ -20,14 +71,27 @@
 	};
 
 	let isLoading = writable(false);
-	const products = writable<Product[]>([]);
+	let product: Product;
+
+	function handleSubmit() {
+		isLoading.set(true);
+	}
 
 	onMount(async () => {
 		isLoading.set(true);
 		try {
-			const response = await fetch('/api/product');
+			const response: any = await fetch('/api/product', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					id: Number(pid)
+				})
+			});
 			const data = await response.json();
-			products.set(data.products);
+
+			product = data.product;
 		} catch (error) {
 			console.error('Error fetching cards:', error);
 		}
@@ -43,7 +107,7 @@
 	class="back"
 	type="button"
 	on:click={() => {
-		goto('/');
+		goto('/shop');
 	}}>&#60;</button
 >
 
@@ -55,28 +119,43 @@
 
 <div class="contents">
 	<div>
-		{#each $products as card}
-			{#if card.published}
-				<div class="card">
-					<img src={card.imgURL} alt={card.name} class="card-image" />
+		{#if product !== undefined}
+			{#if product.published}
+				<form method="POST" class="card" on:submit={handleSubmit}>
+					<img src={product.imgURL} alt={product.name} class="card-image" />
 					<div class="card-content">
-						<h2 class="card-title">{card.name}</h2>
+						<h2 class="card-title">{product.name}</h2>
 						<hr class="asdasd" />
-						<p class="card-des">{card.description}</p>
-						{#if card.amount < 4}
-							<p class="card-sold-out">품절임박! {card.amount}개 남음!</p>
+						<p class="card-des">{product.description}</p>
+						{#if product.amount < 4}
+							<p class="card-sold-out">품절임박! {product.amount}개 남음!</p>
 						{/if}
-						<p class="card-price">{card.price}P</p>
+						<p class="card-price">{product.price}P</p>
+						<p class="card-price-my">현재 보유 포인트: {$profileStore.point}P</p>
 
-						<p><a href="/shop/{card.id}" target="_blank" class="card-link">구매</a></p>
+						<input type="tel" placeholder="전화번호 (- 제외)" name="phone" id="phone" />
+						<input
+							type="submit"
+							value="구매"
+							class="card-link"
+							disabled={product.price >= $profileStore.point}
+						/>
 					</div>
-				</div>
+				</form>
+			{:else}
+				비공개 입니다.
 			{/if}
-		{/each}
+		{/if}
 	</div>
 </div>
 
 <style>
+	input {
+		margin-top: 1rem;
+		width: calc(100% - 2rem);
+		font-size: 2rem;
+		padding: 1rem;
+	}
 	.back {
 		height: 100%;
 		width: 10%;
@@ -105,7 +184,6 @@
 		width: calc(100% - 40px);
 		margin-bottom: 20px;
 		box-sizing: border-box;
-		border: 1px solid #ddd;
 		border-radius: 5px;
 		overflow: hidden;
 	}
@@ -131,9 +209,15 @@
 
 	.card-price {
 		text-align: right;
-		font-size: 2rem;
+		font-size: 3rem;
 		color: green;
 		font-weight: 1000;
+	}
+	.card-price-my {
+		text-align: right;
+		font-size: 2rem;
+		color: black;
+		font-weight: 700;
 	}
 
 	.card-sold-out {
@@ -156,5 +240,11 @@
 		padding: 1rem 1rem;
 		border-radius: 5px;
 		font-size: 1.5rem;
+		width: 100%;
+		cursor: pointer;
+	}
+
+	.card-link:disabled {
+		background-color: #919191;
 	}
 </style>

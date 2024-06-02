@@ -12,7 +12,6 @@ export async function POST({ request, locals }: { request: any; locals: any }): 
 			imgURL,
 			description,
 			published,
-			amount,
 			price,
 			secret
 		}: {
@@ -21,7 +20,6 @@ export async function POST({ request, locals }: { request: any; locals: any }): 
 			imgURL: string;
 			description: string;
 			published: boolean;
-			amount: number;
 			price: number;
 			secret: string;
 		} = await request.json();
@@ -42,8 +40,8 @@ export async function POST({ request, locals }: { request: any; locals: any }): 
 					imgURL,
 					description,
 					published,
-					amount,
-					price
+					price,
+					amount: 0
 				}
 			});
 
@@ -82,7 +80,11 @@ let products: any;
 
 export async function GET({ request, locals }: { request: any; locals: any }): Promise<Response> {
 	try {
-		products = await prisma.product.findMany();
+		products = await prisma.product.findMany({
+			orderBy: {
+				id: 'asc'
+			}
+		});
 	} catch (err) {
 		console.error(err);
 		return new Response(JSON.stringify({ error: 'Couldnt change user information' }), {
@@ -109,6 +111,27 @@ export async function DELETE({
 }): Promise<Response> {
 	try {
 		const { id }: { id: number } = await request.json();
+		const product_keys = await prisma.product_key.findMany({
+			where: {
+				productId: id
+			}
+		});
+		if (!product_keys) {
+			return new Response(JSON.stringify({ error: 'Couldnt change user information' }), {
+				status: 404,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+		}
+		for (let key of product_keys) {
+			await prisma.product_key.delete({
+				where: {
+					id: key.id
+				}
+			});
+		}
+
 		await prisma.product.delete({
 			where: {
 				id: id

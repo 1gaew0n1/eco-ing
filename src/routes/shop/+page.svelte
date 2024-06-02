@@ -54,18 +54,26 @@
 	<div>
 		{#each $products as card}
 			{#if card.published}
-				<div class="card">
-					<img src={card.imgURL} alt={card.name} class="card-image" />
+				<div class="card" style="width: 100%;">
+					<img src={card.imgURL} alt={card.name} class="card-image" width="100%" height="100%" />
 					<div class="card-content">
 						<h2 class="card-title">{card.name}</h2>
 						<hr class="asdasd" />
 						<p class="card-des">{card.description}</p>
-						{#if card.amount < 4}
+						{#if card.amount == 0}
+							<p class="card-sold-out">품절됨</p>
+						{:else if card.amount < 3}
 							<p class="card-sold-out">품절임박! {card.amount}개 남음!</p>
 						{/if}
 						<p class="card-price">{card.price}P</p>
 
-						<p><a href="/shop/{card.id}" target="_blank" class="card-link">구매</a></p>
+						<p>
+							<a
+								href="/shop{card.amount == 0 ? '' : '/' + card.id}"
+								class="card-link {card.amount == 0 ? 'disabled' : ''}"
+								>{card.amount == 0 ? '품절' : '구매'}</a
+							>
+						</p>
 					</div>
 				</div>
 			{/if}
@@ -95,11 +103,11 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		padding: 20px;
-		width: 100%;
+		width: calc(100% - 40px);
 	}
 
 	.card {
-		width: calc(100% - 40px);
+		width: 100%;
 		margin-bottom: 20px;
 		box-sizing: border-box;
 		border: 1px solid #ddd;
@@ -153,5 +161,9 @@
 		padding: 1rem 1rem;
 		border-radius: 5px;
 		font-size: 1.5rem;
+	}
+
+	.disabled {
+		background-color: #8b8b8b;
 	}
 </style>
