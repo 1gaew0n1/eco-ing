@@ -37,6 +37,7 @@ model Profile {
   user_id String @unique
   studentsId String 
   schoolName String
+  class String
   point Int
   level Int
   barcode String @unique

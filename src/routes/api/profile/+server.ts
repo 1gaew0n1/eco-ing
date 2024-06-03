@@ -10,7 +10,6 @@ export async function POST({ request }: { request: any }): Promise<Response> {
 				user_id: id
 			}
 		});
-		console.log(profile?.id);
 
 		if (!profile) {
 			return genResponse(404, { error: '프로필을 찾지 못하였습니다.' });

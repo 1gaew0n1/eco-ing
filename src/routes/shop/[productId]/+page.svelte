@@ -19,14 +19,15 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					user_id: userId
+					id: userId
 				})
 			});
 
 			const data = await response.json();
+			console.log(data);
 
-			if (data.contents.profile && data.contents.profile.length > 0) {
-				profileStore.set(data.contents.profile[0]);
+			if (data.contents.profile) {
+				profileStore.set(data.contents.profile);
 			} else {
 				throw new Error('프로필을 불러오지 못했습니다.');
 			}

@@ -31,6 +31,7 @@ export async function register(
 				user_id: key.userId,
 				studentsId,
 				schoolName,
+				class: studentsId.charAt(0) + '0' + studentsId.charAt(2),
 				point: 0,
 				level: 1,
 				barcode: barcode
