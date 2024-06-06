@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import { writable } from 'svelte/store';
 	import Loding from '../../Loding.svelte';
+	import { redirect } from '@sveltejs/kit';
 	export let data: PageData;
 
 	const isLoading = writable(false);
@@ -20,10 +21,23 @@
 			form.addEventListener('submit', handleSubmit);
 		}
 	});
+	let id = data.user.userId;
+	async function handleSubmits() {
+		await fetch('/api/profile', {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id })
+		});
+
+		redirect(302, '/');
+	}
 
 	if (data.user) {
-		isLoading.set(true);
 		let userId = data.user.userId;
+
+		isLoading.set(true);
 
 		// API 요청을 보내고 응답에서 point 값을 추출하는 함수
 		async function fetchProfile() {
@@ -127,6 +141,8 @@
 			placeholder={$profileStore.barcode}
 			disabled={true}
 		/>
+
+		<button on:click={handleSubmits} class="delete"> 계정 삭제</button>
 	</div>
 
 	<div class="footer">
@@ -155,6 +171,19 @@
 		padding: 0.5rem;
 		font-size: 1.5rem;
 		height: 3rem;
+	}
+
+	.delete {
+		color: red;
+		border: solid 0.1rem red;
+		background-color: white;
+		border-radius: 2rem;
+		margin-top: 2rem;
+		width: 85%;
+		padding: 0.5rem;
+		font-size: 1.5rem;
+		height: 3rem;
+		cursor: pointer;
 	}
 
 	input:focus {
