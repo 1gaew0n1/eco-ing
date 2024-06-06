@@ -6,6 +6,34 @@
 	export let data: PageData;
 	import { onMount } from 'svelte';
 	import Loding from './Loding.svelte';
+	let deferredPrompt: any;
+
+	onMount(() => {
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+			deferredPrompt = e;
+
+			// 사용자에게 설치 프롬프트를 보여줄지 여부를 결정하는 로직을 추가합니다.
+			// 예를 들어, 일정 시간 후에 자동으로 설치 프롬프트를 표시할 수 있습니다.
+			setTimeout(() => {
+				showInstallPrompt();
+			}, 3000); // 3초 후에 설치 프롬프트를 표시
+		});
+	});
+
+	function showInstallPrompt() {
+		if (deferredPrompt) {
+			deferredPrompt.prompt();
+			deferredPrompt.userChoice.then((choiceResult: any) => {
+				if (choiceResult.outcome === 'accepted') {
+					console.log('User accepted the A2HS prompt');
+				} else {
+					console.log('User dismissed the A2HS prompt');
+				}
+				deferredPrompt = null;
+			});
+		}
+	}
 
 	let isLoading = writable(false);
 
@@ -44,8 +72,6 @@
 				profileStore.set({
 					id: '',
 					user_id: '',
-					studentsId: '',
-					schoolName: '',
 					point: 0,
 					level: 0,
 					barcode: '',
@@ -97,6 +123,44 @@
 					<a href="/auth/register">회원가입 하기</a>
 				</div>
 			</div>
+			<div class="toolkit">
+				<div class="menu-button">
+					<button
+						on:click={() => {
+							goto('/');
+						}}
+						><p>Main Page</p>
+						메인 페이지</button
+					>
+				</div>
+				<div class="menu-button">
+					<button on:click={showInstallPrompt}
+						><p>Installation (beta)</p>
+						앱 설치 (beta)</button
+					>
+					<p>></p>
+				</div>
+				<div class="menu-button">
+					<button
+						on:click={() => {
+							goto('/auth/login');
+						}}
+						><p>Sign in</p>
+						로그인</button
+					>
+					<p>></p>
+				</div>
+				<div class="menu-button">
+					<button
+						on:click={() => {
+							goto('/auth/register');
+						}}
+						><p>Sign up</p>
+						회원가입</button
+					>
+					<p>></p>
+				</div>
+			</div>
 		{:else}
 			<div class="box green no-top-radius">
 				<p class="title">Eco -ing</p>
@@ -145,6 +209,23 @@
 					>
 					<p>></p>
 				</div>
+				<div class="menu-button">
+					<button on:click={showInstallPrompt}
+						><p>Installation</p>
+						앱 설치 (IOS 불가)</button
+					>
+					<p>></p>
+				</div>
+				<div class="menu-button">
+					<button
+						on:click={() => {
+							goto('/competition');
+						}}
+						><p>Competition</p>
+						반 대항전 확인</button
+					>
+					<p>></p>
+				</div>
 			</div>
 		{/if}
 	</div>
@@ -156,6 +237,15 @@
 						<a href={card.url} class="card-link2"
 							><img src={card.imgURL} alt={card.title} class="card-image2" /></a
 						>
+					</div>
+				{:else if card.style == 'only_text'}
+					<div class="card">
+						<div class="card-content">
+							<h2 class="card-title">{card.title}</h2>
+							<hr />
+							<p>{card.description}</p>
+							<p><a href={card.url} class="card-link">바로가기</a></p>
+						</div>
 					</div>
 				{:else}
 					<div class="card">

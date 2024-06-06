@@ -68,14 +68,14 @@ export const actions: Actions = {
 				}
 			});
 			const key = product_key?.keys;
-			// const messageService = new msgModule(COOLSMS_API_KEY, COOLSMS_API_SECRET);
-			// const message = {
-			// 	text: '구매처리 완료!' + key + '입니다.',
-			// 	to: phone,
-			// 	from: PHONE_NUMBER,
-			// 	autoTypeDetect: true
-			// };
-			// await messageService.sendOne(message).then(console.log).catch(console.error);
+			const messageService = new msgModule(COOLSMS_API_KEY, COOLSMS_API_SECRET);
+			const message = {
+				text: '구매처리 완료!' + key + '입니다.',
+				to: phone,
+				from: PHONE_NUMBER,
+				autoTypeDetect: true
+			};
+			await messageService.sendOne(message).then(console.log).catch(console.error);
 			await prisma.product_key.delete({
 				where: {
 					id: product_key?.id

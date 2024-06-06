@@ -15,12 +15,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	default: async ({ request }) => {
-		const { name, username, password, studentsId, schoolName, barcode } = Object.fromEntries(
+		const { name, password, studentsId, barcode } = Object.fromEntries(
 			await request.formData()
 		) as Record<string, string>;
 
 		try {
-			await register(name, username, password, studentsId, schoolName, barcode);
+			await register(name, password, studentsId, barcode);
 		} catch (err) {
 			console.error(err);
 			return fail(400, { message: '회원가입에 실패하였습니다.' });

@@ -4,33 +4,30 @@ import { v4 } from 'uuid';
 
 export async function register(
 	name: string,
-	username: string,
 	password: string | null,
 	studentsId: string,
-	schoolName: string,
 	barcode: string
 ) {
 	try {
+		console.log(name, password, studentsId, barcode);
 		await auth.createUser({
 			key: {
-				providerId: 'username',
-				providerUserId: username,
+				providerId: 'studentsId',
+				providerUserId: studentsId,
 				password
 			},
 			attributes: {
 				name,
-				username
+				studentsId
 			}
 		});
 
-		const key = await auth.useKey('username', username, password);
+		const key = await auth.useKey('studentsId', studentsId, password);
 
 		await prisma.profile.create({
 			data: {
 				id: v4(),
 				user_id: key.userId,
-				studentsId,
-				schoolName,
 				class: studentsId.charAt(0) + '0' + studentsId.charAt(2),
 				point: 0,
 				level: 1,

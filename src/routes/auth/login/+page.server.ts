@@ -21,7 +21,7 @@ export const actions: Actions = {
 		>;
 
 		try {
-			const key = await auth.useKey('username', username, password);
+			const key = await auth.useKey('studentsId', username, password);
 			const session = await auth.createSession({
 				userId: key.userId,
 				attributes: {}

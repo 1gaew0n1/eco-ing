@@ -48,7 +48,7 @@
 		{#if error}
 			<p class="error">오류: {error}</p>
 		{/if}
-		<input type="text" id="username" name="username" placeholder="아이디" required />
+		<input type="text" id="username" name="username" placeholder="학번" required />
 		<input type="password" id="password" name="password" placeholder="비밀번호" required />
 	</div>
 	<div class="footer">

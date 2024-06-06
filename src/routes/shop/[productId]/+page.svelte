@@ -37,7 +37,6 @@
 				id: '',
 				user_id: '',
 				studentsId: '',
-				schoolName: '',
 				point: 0,
 				level: 0,
 				barcode: '',

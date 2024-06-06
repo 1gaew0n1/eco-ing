@@ -54,8 +54,6 @@
 				profileStore.set({
 					id: '',
 					user_id: '',
-					studentsId: '',
-					schoolName: '',
 					point: 0,
 					level: 0,
 					barcode: '',
@@ -70,6 +68,8 @@
 			fetchProfile();
 		});
 	}
+
+	console.log(data.user);
 
 	let error: string | null = null;
 	export let form;
@@ -95,37 +95,29 @@
 	</div>
 
 	<div class="contents">
-		<p class="title">계정 정보 수정</p>
+		<p class="title">계정 정보</p>
 		{#if error}
 			<p class="error">Error: {error}</p>
 		{/if}
 
 		<input type="text" id="name" name="name" value={data.user.name} required />
 
-		<input type="text" id="username" name="username" value={data.user.username} required />
-
-		<input
-			type="text"
-			id="studentsId"
-			name="studentsId"
-			value={$profileStore.studentsId}
-			required
-		/>
-
 		<input
 			type="text"
 			id="schoolName"
 			name="schoolName"
-			placeholder={$profileStore.schoolName}
+			value={data.user.profile.studentsId}
 			disabled={true}
 		/>
+
+		<input type="text" id="schoolName" name="schoolName" placeholder="현암중학교" disabled={true} />
 
 		<input
 			type="email"
 			id="email"
 			name="email"
 			value={$profileStore.email}
-			placeholder="이메일을 입력하세요"
+			placeholder="이메일을 입력하세요 (선택)"
 		/>
 
 		<input
@@ -217,5 +209,9 @@
 		border: none;
 		font-size: 1.5rem;
 		cursor: pointer;
+	}
+
+	button:disabled {
+		color: gray;
 	}
 </style>

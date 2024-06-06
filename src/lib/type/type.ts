@@ -4,8 +4,6 @@ import { writable } from 'svelte/store';
 interface Profile {
 	id: string;
 	user_id: string;
-	studentsId: string;
-	schoolName: string;
 	point: number;
 	level: number;
 	barcode: string;
@@ -63,8 +61,6 @@ export const resultStore = writable(initialState);
 const initialProfile: Profile = {
 	id: '',
 	user_id: '',
-	studentsId: '',
-	schoolName: '',
 	point: 0,
 	level: 0,
 	barcode: '',

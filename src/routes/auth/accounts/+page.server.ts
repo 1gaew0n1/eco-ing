@@ -4,9 +4,7 @@ import { prisma } from '$lib/prisma';
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
-		const { username, name, email, studentsId } = Object.fromEntries(
-			await request.formData()
-		) as Record<string, string>;
+		const { name, email } = Object.fromEntries(await request.formData()) as Record<string, string>;
 		try {
 			const session = await locals.auth.validate();
 			if (!session || !session.user) {
@@ -20,7 +18,6 @@ export const actions: Actions = {
 					user_id: session.user.userId
 				},
 				data: {
-					studentsId: studentsId,
 					email: email
 				}
 			});
@@ -30,8 +27,7 @@ export const actions: Actions = {
 					id: session.user.userId
 				},
 				data: {
-					name: name,
-					username: username
+					name: name
 				}
 			});
 		} catch (err) {
