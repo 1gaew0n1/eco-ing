@@ -211,8 +211,8 @@
 				</div>
 				<div class="menu-button">
 					<button on:click={showInstallPrompt}
-						><p>Installation</p>
-						앱 설치 (IOS 불가)</button
+						><p>Installation (beta)</p>
+						앱 설치 (beta)</button
 					>
 					<p>></p>
 				</div>
