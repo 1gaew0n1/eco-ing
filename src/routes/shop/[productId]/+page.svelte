@@ -12,6 +12,10 @@
 
 	// API 요청을 보내고 응답에서 point 값을 추출하는 함수
 	async function fetchProfile() {
+		if (!data.user.userId) {
+			await goto('/');
+		}
+
 		try {
 			const response: any = await fetch('/api/profile', {
 				method: 'POST',
@@ -36,7 +40,6 @@
 			profileStore.set({
 				id: '',
 				user_id: '',
-				studentsId: '',
 				point: 0,
 				level: 0,
 				barcode: '',

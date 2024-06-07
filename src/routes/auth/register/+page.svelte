@@ -6,7 +6,7 @@
 	export let step: number = 0;
 	const titles = [
 		'안녕하세요?',
-		'이름을 알려주세요.',
+		'이름을 알려주세요!',
 		'학번을 입력해주세요.',
 		'비밀번호를 설정해주세요.',
 		'학생증 뒷면 바코드의 글자를 입력해주세요.'
@@ -137,9 +137,15 @@
 				<p class="emoji">👋</p>
 				<p class="title first">{titles[step]}</p>
 				<p class="description">만나서 반가워요! 회원가입을 해볼까요?</p>
+
+				<p class="warn">학생증은 챙기셨죠?</p>
 			{:else}
 				<p class="title">{titles[step]}</p>
 			{/if}
+
+			<p class="warn {step == 0 || step == 1 ? 'hidden' : ''}">
+				주의) 이 정보는 한번 쓰면 바꿀 수 없어요!
+			</p>
 
 			<input
 				type="text"
@@ -180,6 +186,11 @@
 				bind:value={$formValues.barcode}
 			/>
 			<p class="error">{$errors.barcode}</p>
+			<img
+				src="https://i.ibb.co/QjF5f4h/22.png"
+				alt="22"
+				class="{step == 4 ? '' : 'hidden'} imageimg"
+			/>
 		</div>
 
 		<div class="footer">
@@ -291,5 +302,16 @@
 		color: red;
 		margin-top: 1rem;
 		font-size: 1.5rem;
+	}
+
+	.warn {
+		color: blue;
+		margin-top: 0.5rem;
+		font-size: 1.25rem;
+	}
+
+	.imageimg {
+		margin: 2rem;
+		width: calc(100% - 4rem);
 	}
 </style>

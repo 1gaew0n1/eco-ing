@@ -120,7 +120,7 @@
 			type="text"
 			id="schoolName"
 			name="schoolName"
-			value={data.user.profile.studentsId}
+			placeholder={data.user.profile.studentsId}
 			disabled={true}
 		/>
 

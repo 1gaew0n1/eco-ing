@@ -9,7 +9,6 @@ export async function register(
 	barcode: string
 ) {
 	try {
-		console.log(name, password, studentsId, barcode);
 		await auth.createUser({
 			key: {
 				providerId: 'studentsId',

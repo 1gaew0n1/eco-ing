@@ -45,34 +45,30 @@
 <hr />
 
 <div class="contents">
-	<div>
-		{#each $products as card}
-			{#if card.published}
-				<div class="card" style="width: 100%;">
-					<img src={card.imgURL} alt={card.name} class="card-image" width="100%" height="100%" />
-					<div class="card-content">
-						<h2 class="card-title">{card.name}</h2>
-						<hr class="asdasd" />
-						<p class="card-des">{card.description}</p>
-						{#if card.amount == 0}
-							<p class="card-sold-out">품절됨</p>
-						{:else if card.amount < 3}
-							<p class="card-sold-out">품절임박! {card.amount}개 남음!</p>
-						{/if}
-						<p class="card-price">{card.price}P</p>
-
-						<p>
-							<a
-								href="/shop{card.amount == 0 ? '' : '/' + card.id}"
-								class="card-link {card.amount == 0 ? 'disabled' : ''}"
-								>{card.amount == 0 ? '품절' : '구매'}</a
-							>
-						</p>
-					</div>
+	{#each $products as card}
+		{#if card.published}
+			<div class="card">
+				<img src={card.imgURL} alt={card.name} class="card-image" />
+				<div class="card-content">
+					<h2 class="card-title">{card.name}</h2>
+					<p class="card-des">{card.description}</p>
+					{#if card.amount == 0}
+						<p class="card-sold-out">품절됨</p>
+					{:else if card.amount < 3}
+						<p class="card-sold-out">품절임박! {card.amount}개 남음!</p>
+					{/if}
+					<p class="card-price">{card.price}P</p>
+					<p>
+						<a
+							href="/shop{card.amount == 0 ? '' : '/' + card.id}"
+							class="card-link {card.amount == 0 ? 'disabled' : ''}"
+							>{card.amount == 0 ? '품절' : '구매'}</a
+						>
+					</p>
 				</div>
-			{/if}
-		{/each}
-	</div>
+			</div>
+		{/if}
+	{/each}
 </div>
 
 <style>
@@ -91,73 +87,83 @@
 		font-size: 3rem;
 		font-weight: 700;
 	}
-	/* CSS 추가 */
 	.contents {
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: center;
-		padding: 20px;
-		width: calc(100% - 40px);
+		justify-content: flex-start;
+		padding: 10px;
+		gap: 10px; /* 카드 간격 */
+		box-sizing: border-box;
 	}
 
 	.card {
-		width: 100%;
-		margin-bottom: 20px;
-		box-sizing: border-box;
+		flex: 1 1 calc(50% - 20px); /* 2열 정렬을 위해 flex-basis 사용 */
+		margin: 10px; /* 카드 간격 */
 		border: 1px solid #ddd;
-		border-radius: 5px;
+		border-radius: 10px; /* 카드 모서리 둥글게 */
 		overflow: hidden;
+		box-sizing: border-box;
+		background-color: #fff; /* 배경색 추가 */
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
 	}
 
 	.card-image {
 		width: 100%;
+		height: auto; /* 비율 유지 */
 		display: block;
+		border-bottom: 1px solid #ddd; /* 이미지 아래 경계선 */
 	}
 
 	.card-content {
-		padding: 10px;
-	}
-
-	.asdasd {
-		margin-top: 1rem;
-		margin-bottom: 1rem;
+		padding: 15px;
 	}
 
 	.card-title {
-		margin-top: 0;
-		font-size: 3rem;
+		margin: 0 0 10px 0;
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #333;
 	}
 
 	.card-price {
-		text-align: right;
-		font-size: 2rem;
-		color: green;
-		font-weight: 1000;
+		font-size: 1.25rem;
+		color: #e53935; /* 가격 색상 */
+		font-weight: 700;
+		margin-top: 10px;
 	}
 
 	.card-sold-out {
 		color: red;
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: 700;
 	}
 
 	.card-des {
-		font-size: 1.25rem;
+		font-size: 1rem;
+		color: #666;
 	}
 
 	.card-link {
 		display: block;
 		text-align: center;
-		margin-top: 10px;
+		margin-top: 15px;
 		text-decoration: none;
 		background-color: #007bff;
 		color: white;
-		padding: 1rem 1rem;
+		padding: 10px;
 		border-radius: 5px;
-		font-size: 1.5rem;
+		font-size: 1rem;
 	}
 
 	.disabled {
 		background-color: #8b8b8b;
+	}
+
+	/* 모바일에서 50% 적용 */
+	@media (max-width: 600px) {
+		.card {
+			flex: 1 1 calc(50% - 20px); /* 작은 화면에서도 50% 너비 */
+			margin: 10px;
+		}
 	}
 </style>
