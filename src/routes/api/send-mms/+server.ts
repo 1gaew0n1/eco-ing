@@ -2,7 +2,7 @@ import { COOLSMS_API_KEY, COOLSMS_API_SECRET, PHONE_NUMBER } from '$env/static/p
 import genResponse from '$lib/type/response';
 import type { RequestHandler } from './$types';
 import axios from 'axios';
-import CoolsmsMessageService from 'coolsms-node-sdk';
+import CoolsmsMessageService, { Message } from 'coolsms-node-sdk';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -43,19 +43,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// 이미지 저장
 		fs.writeFileSync(imagePath, processedImageBuffer);
-		const response = await coolsms
-			.uploadFile(imagePath, 'MMS')
-			.then((res: any) => res.fileId)
-			.then((fileId: any) => {
-				coolsms.sendOne({
-					imageId: fileId,
-					to: to,
-					from: PHONE_NUMBER,
-					text: `구매처리가 완료되었습니다. 전국 ${where_to_use} 에서 ${due_date} 이전 까지 사용 가능한 상품권입니다. `,
-					subject: '구매 처리 완료',
-					autoTypeDetect: true
-				});
-			});
+		// const response = await coolsms
+		// 	.uploadFile(imagePath, 'MMS')
+		// 	.then((res: any) => res.fileId)
+		// 	.then((fileId: any) => {
+		// 		coolsms.sendOne({
+		// 			imageId: fileId,
+		// 			to: to,
+		// 			from: PHONE_NUMBER,
+		// 			text: `구매처리가 완료되었습니다. 전국 ${where_to_use} 에서 ${due_date} 이전 까지 사용 가능한 상품권입니다. `,
+		// 			subject: '구매 처리 완료',
+		// 			autoTypeDetect: true
+		// 		});
+		// 	});
 
 		return genResponse(200, { message: '성공' });
 	} catch (error) {
