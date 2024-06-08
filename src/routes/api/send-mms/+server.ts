@@ -10,7 +10,7 @@ import sharp from 'sharp';
 
 const apiKey = COOLSMS_API_KEY;
 const apiSecret = COOLSMS_API_SECRET;
-// const coolsms = new CoolsmsMessageService(apiKey, apiSecret);
+const coolsms = new CoolsmsMessageService(apiKey, apiSecret);
 
 // 현재 모듈의 디렉토리 경로를 가져옵니다.
 const __filename = fileURLToPath(import.meta.url);
