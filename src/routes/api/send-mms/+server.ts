@@ -2,7 +2,7 @@ import { COOLSMS_API_KEY, COOLSMS_API_SECRET, PHONE_NUMBER } from '$env/static/p
 import genResponse from '$lib/type/response';
 import type { RequestHandler } from './$types';
 import axios from 'axios';
-const CoolSMS = require('coolsms-node-sdk');
+import CoolsmsMessageService from 'coolsms-node-sdk';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,7 +10,7 @@ import sharp from 'sharp';
 
 const apiKey = COOLSMS_API_KEY;
 const apiSecret = COOLSMS_API_SECRET;
-const coolsms = new CoolSMS(apiKey, apiSecret);
+const coolsms = new CoolsmsMessageService(apiKey, apiSecret);
 
 // 현재 모듈의 디렉토리 경로를 가져옵니다.
 const __filename = fileURLToPath(import.meta.url);
