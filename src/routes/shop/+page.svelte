@@ -52,7 +52,7 @@
 				<div class="card-content">
 					<h2 class="card-title">{card.name}</h2>
 					<p class="card-des">{card.description}</p>
-					{#if card.amount == 0}
+					{#if card.amount <= 0}
 						<p class="card-sold-out">품절됨</p>
 					{:else if card.amount < 3}
 						<p class="card-sold-out">품절임박! {card.amount}개 남음!</p>
@@ -60,9 +60,9 @@
 					<p class="card-price">{card.price}P</p>
 					<p>
 						<a
-							href="/shop{card.amount == 0 ? '' : '/' + card.id}"
-							class="card-link {card.amount == 0 ? 'disabled' : ''}"
-							>{card.amount == 0 ? '품절' : '구매'}</a
+							href="/shop{card.amount <= 0 ? '' : '/' + card.id}"
+							class="card-link {card.amount <= 0 ? 'disabled' : ''}"
+							>{card.amount <= 0 ? '품절' : '구매'}</a
 						>
 					</p>
 				</div>

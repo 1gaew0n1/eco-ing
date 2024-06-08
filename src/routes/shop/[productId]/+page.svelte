@@ -59,6 +59,7 @@
 
 	let isLoading = writable(false);
 	let product: Product;
+	let product_due: string;
 
 	function handleSubmit() {
 		isLoading.set(true);
@@ -79,6 +80,19 @@
 			const data = await response.json();
 
 			product = data.contents.product;
+
+			const response_key: any = await fetch('/api/product/key', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					productId: product.id,
+					secret: '현암중학교'
+				})
+			});
+			const data_key = await response_key.json();
+			product_due = data_key.contents.product_key.due_date;
 		} catch (error) {
 			console.error('제품을 불러오는데 오류가 발생했습니다:', error);
 		}
@@ -116,21 +130,26 @@
 				<form method="POST" class="card" on:submit={handleSubmit}>
 					<img src={product.imgURL} alt={product.name} class="card-image" />
 					<div class="card-content">
-						<h2 class="card-title">{product.name}</h2>
+						<h2 class="card-title">{product.name} ({product.where_to_use})</h2>
 						<hr class="asdasd" />
 						<p class="card-des">{product.description}</p>
-						{#if product.amount < 4}
+						{#if product.amount <= 0}
+							<p class="card-sold-out">품절됨</p>
+						{:else if product.amount < 3}
 							<p class="card-sold-out">품절임박! {product.amount}개 남음!</p>
 						{/if}
 						<p class="card-price">{product.price}P</p>
 						<p class="card-price-my">현재 보유 포인트: {$profileStore.point}P</p>
 
+						{#if product.amount > 0}
+							<p class="card-sold-out">{product_due}내에 사용 가능</p>
+						{/if}
 						<input type="tel" placeholder="전화번호 (- 제외)" name="phone" id="phone" />
 						<input
 							type="submit"
-							value="구매"
+							value={product.amount <= 0 ? '품절' : '구매'}
 							class="card-link"
-							disabled={product.price >= $profileStore.point}
+							disabled={product.price >= $profileStore.point || product.amount <= 0}
 						/>
 					</div>
 				</form>

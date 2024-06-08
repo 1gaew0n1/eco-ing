@@ -10,11 +10,13 @@ export async function POST({ request }: { request: any }): Promise<Response> {
 		const {
 			key,
 			productId,
-			secret
+			secret,
+			due_date
 		}: {
 			key: string;
 			productId: number;
 			secret: string;
+			due_date: string;
 		} = await request.json();
 
 		if (secret !== SECRET_KEY) {
@@ -35,7 +37,8 @@ export async function POST({ request }: { request: any }): Promise<Response> {
 				data: {
 					id: v4(),
 					keys: key,
-					productId
+					productId,
+					due_date
 				}
 			});
 

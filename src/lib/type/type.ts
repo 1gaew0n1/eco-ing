@@ -18,6 +18,7 @@ export type Product = {
 	published: boolean;
 	amount: number;
 	price: number;
+	where_to_use: string;
 	createdAt: string;
 	updatedAt: String;
 };

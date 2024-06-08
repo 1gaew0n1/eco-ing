@@ -68,14 +68,18 @@ export const actions: Actions = {
 				}
 			});
 			const key = product_key?.keys;
-			const messageService = new msgModule(COOLSMS_API_KEY, COOLSMS_API_SECRET);
-			const message = {
-				text: '구매처리 완료!' + key + '입니다.',
-				to: phone,
-				from: PHONE_NUMBER,
-				autoTypeDetect: true
-			};
-			await messageService.sendOne(message).then(console.log).catch(console.error);
+			const response: any = await fetch('http://localhost:5173/api/send-mms', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					to: phone,
+					text: key,
+					where_to_use: product?.where_to_use,
+					due_date: product_key?.due_date
+				})
+			});
 			await prisma.product_key.delete({
 				where: {
 					id: product_key?.id

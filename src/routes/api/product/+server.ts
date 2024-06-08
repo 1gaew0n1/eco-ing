@@ -12,7 +12,8 @@ export async function POST({ request }: { request: any }): Promise<Response> {
 			description,
 			published,
 			price,
-			secret
+			secret,
+			where_to_use
 		}: {
 			id: number;
 			name: string;
@@ -20,6 +21,7 @@ export async function POST({ request }: { request: any }): Promise<Response> {
 			description: string;
 			published: boolean;
 			price: number;
+			where_to_use: string;
 			secret: string;
 		} = await request.json();
 
@@ -35,6 +37,7 @@ export async function POST({ request }: { request: any }): Promise<Response> {
 					description,
 					published,
 					price,
+					where_to_use,
 					amount: 0
 				}
 			});
