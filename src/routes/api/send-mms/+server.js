@@ -1,22 +1,19 @@
 import { COOLSMS_API_KEY, COOLSMS_API_SECRET, PHONE_NUMBER } from '$env/static/private';
 import genResponse from '$lib/type/response';
-import type { RequestHandler } from './$types';
 import axios from 'axios';
-import CoolsmsMessageService, { Message } from 'coolsms-node-sdk';
+import CoolsmsMessageService from 'coolsms-node-sdk'; // 변경된 부분
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 
-const apiKey = COOLSMS_API_KEY;
-const apiSecret = COOLSMS_API_SECRET;
-const coolsms = new CoolsmsMessageService(apiKey, apiSecret);
+// const coolsms = new CoolsmsMessageService(COOLSMS_API_KEY, COOLSMS_API_SECRET);
 
 // 현재 모듈의 디렉토리 경로를 가져옵니다.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST = async ({ request }) => {
 	const { to, text, where_to_use, due_date } = await request.json();
 	if (!to || !text) {
 		return new Response('Recipient number and text are required', { status: 400 });
@@ -64,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-async function processBarcodeImage(buffer: Buffer): Promise<Buffer> {
+async function processBarcodeImage(buffer) {
 	// 이미지를 읽어들이고 sharp 모듈을 사용하여 처리
 	const image = sharp(buffer);
 
