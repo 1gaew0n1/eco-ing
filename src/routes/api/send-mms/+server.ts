@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return new Response('Recipient number and text are required', { status: 400 });
 	}
 
-	const barcodeUrl = `http://localhost:5173/api/barcode?text=${encodeURIComponent(text)}`;
+	const barcodeUrl = `https://eco-ing.vercel.app/api/barcode?text=${encodeURIComponent(text)}`;
 
 	try {
 		// 바코드 이미지 다운로드

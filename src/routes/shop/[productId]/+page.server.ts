@@ -68,7 +68,7 @@ export const actions: Actions = {
 				}
 			});
 			const key = product_key?.keys;
-			const response: any = await fetch('http://localhost:5173/api/send-mms', {
+			const response: any = await fetch('https://eco-ing.vercel.app/api/send-mms', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
