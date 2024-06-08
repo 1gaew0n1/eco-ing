@@ -57,8 +57,8 @@
 		"@prisma/client": "^4.9.0",
 		"axios": "^1.7.2",
 		"bwip-js": "^4.3.2",
-		"coolsms-node-sdk": "^2.1.0",
 		"dotenv": "^16.4.5",
+		"coolsms-node-sdk": "^2.0.1",
 		"lucia": "^2.7.6",
 		"uuid": "^9.0.1"
 	}

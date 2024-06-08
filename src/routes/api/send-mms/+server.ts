@@ -7,13 +7,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 
-// const coolsms = new CoolsmsMessageService(COOLSMS_API_KEY, COOLSMS_API_SECRET);
-
 // 현재 모듈의 디렉토리 경로를 가져옵니다.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const POST = async ({ request }) => {
+	const coolsms = await new CoolsmsMessageService(COOLSMS_API_KEY, COOLSMS_API_SECRET);
 	const { to, text, where_to_use, due_date } = await request.json();
 	if (!to || !text) {
 		return new Response('Recipient number and text are required', { status: 400 });
@@ -61,7 +60,7 @@ export const POST = async ({ request }) => {
 	}
 };
 
-async function processBarcodeImage(buffer) {
+async function processBarcodeImage(buffer: any) {
 	// 이미지를 읽어들이고 sharp 모듈을 사용하여 처리
 	const image = sharp(buffer);
 

@@ -10,9 +10,5 @@ export const load: PageServerLoad = async ({ locals }) => {
 	// 	throw redirect(302, '/auth/register');
 	// }
 
-	console.log(CoolsmsMessageService);
-	console.log(typeof CoolsmsMessageService);
-	console.log(new CoolsmsMessageService(COOLSMS_API_KEY, COOLSMS_API_SECRET));
-
 	const session = await locals.auth.validate();
 };
