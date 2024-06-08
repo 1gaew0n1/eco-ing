@@ -2,7 +2,7 @@ import { COOLSMS_API_KEY, COOLSMS_API_SECRET, PHONE_NUMBER } from '$env/static/p
 import genResponse from '$lib/type/response';
 import type { RequestHandler } from './$types';
 import axios from 'axios';
-import CoolSMS from 'coolsms-node-sdk';
+const CoolSMS = require('coolsms-node-sdk');
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -45,8 +45,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		fs.writeFileSync(imagePath, processedImageBuffer);
 		const response = await coolsms
 			.uploadFile(imagePath, 'MMS')
-			.then((res) => res.fileId)
-			.then((fileId) => {
+			.then((res: any) => res.fileId)
+			.then((fileId: any) => {
 				coolsms.sendOne({
 					imageId: fileId,
 					to: to,
