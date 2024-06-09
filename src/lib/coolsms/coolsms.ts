@@ -1,7 +1,8 @@
 import ImageToBase64 from 'image-to-base64';
 import { customAlphabet } from 'nanoid';
 import { formatISO } from 'date-fns';
-import { HmacSHA256 } from 'crypto-js';
+import pkg from 'crypto-js';
+const { HmacSHA256 } = pkg;
 
 export class CoolsmsMessageService {
 	private readonly baseUrl = 'https://api.coolsms.co.kr';
