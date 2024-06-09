@@ -12,16 +12,20 @@ export const POST = async ({ request }) => {
 		const imgUrl = `${MY_URL}/api/send-mms/barcode?text=${text}`;
 		const response = await coolsms
 			.uploadFile(imgUrl, 'MMS')
-			.then((res: any) => res.fileId)
-			.then((fileId: any) => {
-				coolsms.sendOne({
-					imageId: fileId,
-					to: to,
-					from: PHONE_NUMBER,
-					text: `구매처리가 완료되었습니다. 전국 ${where_to_use} 매장 에서 ${due_date} 이전 까지 사용 가능한 상품권입니다. `,
-					subject: '구매 처리 완료',
-					autoTypeDetect: true
-				});
+			.then((res) => res.fileId)
+			.then((fileId) => {
+				coolsms
+					.sendOne({
+						imageId: fileId,
+						to: to,
+						from: PHONE_NUMBER,
+						text: `구매처리가 완료되었습니다. 전국 ${where_to_use} 에서 ${due_date} 이전 까지 사용 가능한 상품권입니다. `,
+						subject: '구매 처리 완료',
+						autoTypeDetect: true
+					})
+					.then((res) => console.log(res));
+
+				return Promise.resolve();
 			});
 		return genResponse(200, { message: '성공', response });
 	} catch (err) {
