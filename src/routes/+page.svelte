@@ -12,12 +12,6 @@
 		window.addEventListener('beforeinstallprompt', (e) => {
 			e.preventDefault();
 			deferredPrompt = e;
-
-			// 사용자에게 설치 프롬프트를 보여줄지 여부를 결정하는 로직을 추가합니다.
-			// 예를 들어, 일정 시간 후에 자동으로 설치 프롬프트를 표시할 수 있습니다.
-			setTimeout(() => {
-				showInstallPrompt();
-			}, 3000); // 3초 후에 설치 프롬프트를 표시
 		});
 	});
 
