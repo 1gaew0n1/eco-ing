@@ -8,6 +8,7 @@ interface Profile {
 	level: number;
 	barcode: string;
 	email: string | null;
+	class: string;
 }
 
 export type Product = {

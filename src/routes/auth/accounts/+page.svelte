@@ -71,7 +71,8 @@
 					point: 0,
 					level: 0,
 					barcode: '',
-					email: null
+					email: null,
+					class: ''
 				});
 			}
 			isLoading.set(false);

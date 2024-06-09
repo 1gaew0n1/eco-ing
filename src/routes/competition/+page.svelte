@@ -3,10 +3,12 @@
 	import { writable } from 'svelte/store';
 	import Loding from '../Loding.svelte';
 	import { goto } from '$app/navigation';
-	import { resultStore } from '$lib/type/type';
+	import { profileStore, resultStore } from '$lib/type/type';
 
 	let isLoading = writable(false);
 	let result: { [key: string]: any };
+	import type { PageData } from './$types';
+	export let data: PageData;
 
 	// 스토어 구독
 	resultStore.subscribe((value) => {
@@ -27,8 +29,50 @@
 		isLoading.set(false);
 	});
 
-	let bans = [1, 2, 3, 4, 5, 6];
-	let haks = [1, 2, 3];
+	let userId = data.user.userId;
+
+	// API 요청을 보내고 응답에서 point 값을 추출하는 함수
+	async function fetchProfile() {
+		try {
+			const response: any = await fetch('/api/profile', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					id: userId
+				})
+			});
+
+			const data = await response.json();
+
+			if (data.contents.profile) {
+				profileStore.set(data.contents.profile);
+			} else {
+				throw new Error('프로필을 찾지 못했습니다.');
+			}
+		} catch (error) {
+			console.error('프로필을 가져오는 도중 오류가 발생했습니다.:', error);
+			profileStore.set({
+				id: '',
+				user_id: '',
+				point: 0,
+				level: 0,
+				barcode: '',
+				email: null,
+				class: ''
+			});
+		}
+	}
+
+	// 페이지가 로드될 때 fetchProfile 함수 호출
+	onMount(async () => {
+		isLoading.set(true);
+		await fetchProfile();
+		isLoading.set(false);
+	});
+
+	console.log($profileStore.class);
 </script>
 
 <svelte:head>
@@ -57,11 +101,13 @@
 <div class="contents">
 	<div>
 		{#each Object.entries(result).sort((a, b) => b[1] - a[1]) as [key, value]}
-			<div class="card">
+			<div class="card {'s' + $profileStore.class === key ? 'my' : ''}">
 				<div class="card-content">
 					<h2 class="card-title">{key.charAt(1)} 학년 {key.charAt(3)}반</h2>
 					<hr class="asdasd" />
-					<div class="card-price">{value} 포인트</div>
+					<div class="card-price">
+						{value} 포인트 {'s' + $profileStore.class === key ? `(${$profileStore.point}P)` : ''}
+					</div>
 				</div>
 			</div>
 		{/each}
@@ -100,6 +146,10 @@
 		border: 1px solid #ddd;
 		border-radius: 5px;
 		overflow: hidden;
+	}
+
+	.my {
+		border: 10px solid rgb(0, 207, 104);
 	}
 
 	.card-image {
