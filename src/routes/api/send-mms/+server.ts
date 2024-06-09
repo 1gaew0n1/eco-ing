@@ -10,9 +10,8 @@ import sharp from 'sharp';
 // 현재 모듈의 디렉토리 경로를 가져옵니다.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+// const coolsms = new CoolsmsMessageService(COOLSMS_API_KEY, COOLSMS_API_SECRET);
 export const POST = async ({ request }) => {
-	const coolsms = await new CoolsmsMessageService(COOLSMS_API_KEY, COOLSMS_API_SECRET);
 	const { to, text, where_to_use, due_date } = await request.json();
 	if (!to || !text) {
 		return new Response('Recipient number and text are required', { status: 400 });
@@ -39,6 +38,8 @@ export const POST = async ({ request }) => {
 
 		// 이미지 저장
 		fs.writeFileSync(imagePath, processedImageBuffer);
+
+		return genResponse(200, { imagePath });
 		// const response = await coolsms
 		// 	.uploadFile(imagePath, 'MMS')
 		// 	.then((res: any) => res.fileId)
