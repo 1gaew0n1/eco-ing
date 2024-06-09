@@ -13,10 +13,12 @@ export const POST = async ({ request }) => {
 	const barcodeUrl = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${text}&scale=3&height=10&includetext=true&textalign=center&padding=5`;
 
 	try {
+		let a = await CoolsmsMessageService;
 		return genResponse(200, {
 			imagePath: barcodeUrl,
-			CoolsmsMessageService,
-			type: typeof CoolsmsMessageService
+			a,
+			type: typeof a,
+			asd: a.prototype
 		});
 		// const response = await coolsms
 		// 	.uploadFile(imagePath, 'MMS')
