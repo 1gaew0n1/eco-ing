@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { prisma } from '$lib/prisma';
-import { COOLSMS_API_KEY, COOLSMS_API_SECRET, PHONE_NUMBER } from '$env/static/private';
+import { COOLSMS_API_KEY, COOLSMS_API_SECRET, MY_URL, PHONE_NUMBER } from '$env/static/private';
 import msgModule from 'coolsms-node-sdk';
 import genResponse from '$lib/type/response';
 
@@ -68,7 +68,7 @@ export const actions: Actions = {
 				}
 			});
 			const key = product_key?.keys;
-			const response: any = await fetch('https://eco-ing.vercel.app/api/send-mms', {
+			const response: any = await fetch(`${MY_URL}/api/send-mms`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
