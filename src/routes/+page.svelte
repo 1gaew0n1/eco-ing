@@ -22,6 +22,7 @@
 	});
 
 	function showInstallPrompt() {
+		alert('앱 설치는 베타버전입니다. 일부 기종에선 설치가 제한됩니다.');
 		if (deferredPrompt) {
 			deferredPrompt.prompt();
 			deferredPrompt.userChoice.then((choiceResult: any) => {
