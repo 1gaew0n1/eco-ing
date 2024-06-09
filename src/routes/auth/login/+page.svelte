@@ -50,6 +50,10 @@
 		{/if}
 		<input type="text" id="username" name="username" placeholder="학번" required />
 		<input type="password" id="password" name="password" placeholder="비밀번호" required />
+		<a
+			href="https://docs.google.com/forms/d/e/1FAIpQLSe1OcBIFItSp8aMhkRJijCHrckZzXCvhzYF4zjjhdZA3VlQqA/viewform?usp=sf_link"
+			><p class="asdfa">로그인 할 수 없나요? 여기를 클릭해주세요.</p></a
+		>
 	</div>
 	<div class="footer">
 		<button type="submit" class="next">로그인</button>
@@ -131,5 +135,17 @@
 		border: none;
 		font-size: 1.5rem;
 		cursor: pointer;
+	}
+
+	a {
+		text-decoration: none;
+		text-decoration-color: none;
+		text-decoration-line: none;
+		color: gray;
+		font-size: 1.25rem;
+	}
+
+	.asdfa {
+		margin-top: 1rem;
 	}
 </style>
