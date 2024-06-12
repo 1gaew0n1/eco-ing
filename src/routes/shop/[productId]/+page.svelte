@@ -150,7 +150,7 @@
 							type="submit"
 							value={product.amount <= 0 ? '품절' : '구매'}
 							class="card-link"
-							disabled={product.price >= $profileStore.point || product.amount <= 0}
+							disabled={product.price > $profileStore.point || product.amount <= 0}
 						/>
 					</div>
 				</form>

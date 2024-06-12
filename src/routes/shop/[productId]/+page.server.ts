@@ -77,9 +77,11 @@ export const actions: Actions = {
 					to: phone,
 					text: key,
 					where_to_use: product?.where_to_use,
-					due_date: product_key?.due_date
+					due_date: product_key?.due_date,
+					pid: product.id
 				})
 			});
+			console.log(response);
 			await prisma.product_key.delete({
 				where: {
 					id: product_key?.id

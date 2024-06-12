@@ -13,10 +13,7 @@ export async function GET({ request }: { request: any }): Promise<Response> {
 		for (let bans of ban_list) {
 			const profile = await prisma.profile.findMany({
 				where: {
-					class: bans + '0' + haks
-				},
-				select: {
-					point: true
+					class: haks + '0' + bans
 				}
 			});
 
