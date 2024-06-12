@@ -43,6 +43,9 @@ export const actions: Actions = {
 			if (!product) {
 				throw Error('제품을 찾지 못하였습니다');
 			}
+			if (user.point < product.price) {
+				throw Error('돈 부족');
+			}
 			await prisma.profile.update({
 				where: {
 					user_id: session.user.userId
