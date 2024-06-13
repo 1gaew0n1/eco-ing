@@ -93,7 +93,7 @@
 		if (step === 3 && password.length < 6) {
 			errorMessages.password = '비밀번호는 최소 6자리입니다.';
 		}
-		if (step === 4 && barcode.length < 6) {
+		if (step === 4 && barcode.length < 1) {
 			errorMessages.barcode = '올바른 바코드를 형식 입력해주세요.';
 		}
 
